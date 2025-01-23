@@ -26,7 +26,7 @@ import co.com.bancolombia.model.ordersmodel.OrdersModel;
 @AllArgsConstructor
 public class ApiRest {
 
-private OrdersUseCase ordersUse;
+private final OrdersUseCase ordersUse;
 
     @GetMapping(path = "/orders")
     public ArrayList<OrdersModel> getOrders() {

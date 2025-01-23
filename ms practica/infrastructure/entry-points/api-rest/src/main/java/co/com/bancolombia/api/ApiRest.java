@@ -28,10 +28,10 @@ import java.io.IOException;
 public class ApiRest {
 
 
-    private UserUseCase userUseCase;
+    private final UserUseCase userUseCase;
 
     @GetMapping(path = "/user")
-    public ArrayList<Ordersmodel> commandName() throws IOException {
+    public ArrayList<Ordersmodel> commandName() throws IOException{
         ArrayList<Ordersmodel> microservice = new ArrayList<Ordersmodel>();
         microservice = userUseCase.user();
         return microservice;

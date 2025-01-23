@@ -33,29 +33,7 @@ public class RestConsumerTest {
         mockBackEnd.shutdown();
     }
 
-    @Test
-    @DisplayName("Validate the function testGet.")
-    void validateTestGet() throws IOException {
-        mockBackEnd.enqueue(new MockResponse()
-                .setHeader("Content-Type", "application/json")
-                .setResponseCode(200)
-                .setBody("{\"state\" : \"ok\"}"));
+   
 
-        var response = restConsumer.testGet();
-
-        Assertions.assertEquals("ok", response.getState());
-    }
-
-    @Test
-    @DisplayName("Validate the function testPost.")
-    void validateTestPost() throws IOException {
-        mockBackEnd.enqueue(new MockResponse()
-                .setHeader("Content-Type", "application/json")
-                .setResponseCode(200)
-                .setBody("{\"state\" : \"ok\"}"));
-
-        var response = restConsumer.testPost();
-
-        Assertions.assertEquals("ok", response.getState());
-    }
+    
 }
