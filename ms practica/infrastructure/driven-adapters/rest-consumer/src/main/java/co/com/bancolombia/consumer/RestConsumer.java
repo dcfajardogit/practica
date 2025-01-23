@@ -16,7 +16,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class RestConsumer implements OrdersmodelRepository
@@ -46,7 +45,6 @@ public class RestConsumer implements OrdersmodelRepository
 
         TypeReference<ArrayList<Ordersmodel>> typeReference = new TypeReference<ArrayList<Ordersmodel>>() {};
         ArrayList<Ordersmodel> orders = callAndMap(request, typeReference);
-        //List<Ordersmodel> orders = mapper.readValue(response, new TypeReference<List<Ordersmodel>>() {});
         return orders;
     }
 
@@ -75,7 +73,6 @@ public class RestConsumer implements OrdersmodelRepository
         TypeReference<ArrayList<Ordersmodel>> typeReference = new TypeReference<ArrayList<Ordersmodel>>() {};
         ArrayList<Ordersmodel> orders = callAndMap(request, typeReference);
         return orders;
-        //return callAndMap(request, new TypeReference<List<Ordersmodel>>() {});
     }
 
     public <T> T callAndMap(Request request, TypeReference<T> typeReference) throws IOException {
