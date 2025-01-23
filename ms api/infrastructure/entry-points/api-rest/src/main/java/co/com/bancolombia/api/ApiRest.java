@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.com.bancolombia.usecase.orders.OrdersUseCase;
 import java.util.ArrayList;
+
+import co.com.bancolombia.model.ordersmodel.OrdersModel;
 /**
  * API Rest controller.
  * 
@@ -27,7 +29,7 @@ public class ApiRest {
 private OrdersUseCase ordersUse;
 
     @GetMapping(path = "/orders")
-    public ArrayList getOrders() {
+    public ArrayList<OrdersModel> getOrders() {
         return ordersUse.orders();
     }
 }

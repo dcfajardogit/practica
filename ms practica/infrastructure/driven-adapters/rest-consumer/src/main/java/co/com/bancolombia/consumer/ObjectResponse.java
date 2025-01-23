@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import co.com.bancolombia.model.ordersmodel.Ordersmodel;
 
 @Getter
 @Setter
@@ -14,6 +15,6 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class ObjectResponse {
-    private ArrayList<OrdersModel> ordersModelList;
+    private ArrayList<Ordersmodel> ordersModelList;
 
 }

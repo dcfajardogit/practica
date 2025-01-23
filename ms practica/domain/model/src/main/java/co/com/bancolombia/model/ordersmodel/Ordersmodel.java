@@ -1,5 +1,4 @@
-package co.com.bancolombia.consumer;
-
+package co.com.bancolombia.model.ordersmodel;
 import lombok.Builder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class OrdersModel {
+public class Ordersmodel {
     private String id;
     private String name;
     private String status;
-
 }

@@ -10,12 +10,16 @@ import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import co.com.bancolombia.consumer.gateway.RestRepository;
+import co.com.bancolombia.model.ordersmodel.gateways.OrdersmodelRepository;
+import co.com.bancolombia.model.ordersmodel.Ordersmodel;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
-public class RestConsumer implements RestRepository
+public class RestConsumer implements OrdersmodelRepository
 {
     private final String url;
     private final OkHttpClient client;
@@ -31,8 +35,8 @@ public class RestConsumer implements RestRepository
     // You should use the methods that you implement from the Gateway from the domain.
 
     @Override
-    @CircuitBreaker(name = "apiGet", fallbackMethod = "testGetOk") // this name should match with settings name in application.yaml
-    public ObjectResponse apiGet() throws IOException {
+    @CircuitBreaker(name = "orders", fallbackMethod = "testGetOk") // this name should match with settings name in application.yaml
+    public ArrayList<Ordersmodel> orders() throws IOException {
 
         Request request = new Request.Builder()
                 .url(url)
@@ -40,7 +44,10 @@ public class RestConsumer implements RestRepository
                 .addHeader("Content-Type", "application/json")
                 .build();
 
-        return callAndMap(request, ObjectResponse.class);
+        TypeReference<ArrayList<Ordersmodel>> typeReference = new TypeReference<ArrayList<Ordersmodel>>() {};
+        ArrayList<Ordersmodel> orders = callAndMap(request, typeReference);
+        //List<Ordersmodel> orders = mapper.readValue(response, new TypeReference<List<Ordersmodel>>() {});
+        return orders;
     }
 
     public String testGetOk(Exception ignored) {
@@ -48,7 +55,7 @@ public class RestConsumer implements RestRepository
     }
 
     @CircuitBreaker(name = "testPost") // this name should match with settings name in application.yaml
-    public ObjectResponse testPost() throws IOException {
+    public ArrayList<Ordersmodel> testPost() throws IOException {
         String json = mapper.writeValueAsString(ObjectRequest.builder()
             .val1("exampleval1")
             .val2("exampleval1")
@@ -64,13 +71,17 @@ public class RestConsumer implements RestRepository
             .addHeader("Content-Type","application/json")
             .build();
 
-        return callAndMap(request, ObjectResponse.class);
+        
+        TypeReference<ArrayList<Ordersmodel>> typeReference = new TypeReference<ArrayList<Ordersmodel>>() {};
+        ArrayList<Ordersmodel> orders = callAndMap(request, typeReference);
+        return orders;
+        //return callAndMap(request, new TypeReference<List<Ordersmodel>>() {});
     }
 
-    private <T> T callAndMap(Request request, Class<T> clazz) throws IOException {
+    public <T> T callAndMap(Request request, TypeReference<T> typeReference) throws IOException {
         Response response = client.newCall(request).execute();
         if (response.isSuccessful()) {
-            return mapper.readValue(response.body().string(), clazz);
+            return mapper.readValue(response.body().string(), typeReference);
         }
         throw new IOException(response.toString());
     }

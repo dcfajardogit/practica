@@ -6,8 +6,8 @@ import co.com.bancolombia.model.ordersmodel.OrdersModel;
 
 @RequiredArgsConstructor
 public class OrdersUseCase {
-    public ArrayList orders() {
-        ArrayList<OrdersModel> ordersList= new ArrayList<>();
+    public ArrayList<OrdersModel> orders() {
+        ArrayList<OrdersModel> ordersList= new ArrayList<OrdersModel>();
         OrdersModel ordersModel = new OrdersModel();
         ordersModel.setId("1");
         ordersModel.setName("Portatil");
