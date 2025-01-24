@@ -9,18 +9,10 @@ import co.com.bancolombia.usecase.orders.OrdersUseCase;
 import java.util.ArrayList;
 
 import co.com.bancolombia.model.ordersmodel.OrdersModel;
-/**
- * API Rest controller.
- * 
- * Example of how to declare and use a use case:
- * <pre>
- * private final MyUseCase useCase;
- * 
- * public String commandName() {
- *     return useCase.execute();
- * }
- * </pre>
- */
+import java.util.logging.Logger;
+
+
+
 @RestController
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
@@ -28,8 +20,13 @@ public class ApiRest {
 
 private final OrdersUseCase ordersUse;
 
+private static final Logger logger = Logger.getLogger(ApiRest.class.getName());
+
     @GetMapping(path = "/orders")
     public ArrayList<OrdersModel> getOrders() {
-        return ordersUse.orders();
+        logger.info("recibió la petición");  
+        var respuesta= ordersUse.orders();
+        logger.info(respuesta.toString()); 
+        return respuesta;
     }
 }

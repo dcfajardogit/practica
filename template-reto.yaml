@@ -1,0 +1,478 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Infraestructura para Microservicios utilizando EKS"
+
+Parameters:
+
+  MiVPC1:
+    Type: String
+    Default: 10.0.0.0/16
+  
+  MiSubnetPublica1:
+    Type: String
+    Default: 10.0.0.0/24
+
+  MiSubnetPrivada1:
+    Type: String
+    Default: 10.0.1.0/24
+
+  MiSubnetPublica2:
+    Type: String
+    Default: 10.0.2.0/24
+
+  MiSubnetPrivada2:
+    Type: String
+    Default: 10.0.3.0/24
+
+  AMIAmazonLinuxID:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+
+
+Resources:
+
+###########
+# VPC with Internet Gateway
+###########
+
+  myVPC1:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref MiVPC1
+      EnableDnsSupport: true
+      Tags: 
+        - Key: Name
+          Value: VPC_DCF
+
+  myIG1:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: IntGatewayDCF
+
+  VPCtoIG1:
+    Type: AWS::EC2::VPCGatewayAttachment
+    DependsOn:
+      - myIG1
+      - myVPC1
+    Properties:
+      InternetGatewayId: !Ref myIG1
+      VpcId: !Ref myVPC1
+
+##########
+# Public Route Table
+###########
+
+  PublicRouteTable1:
+    Type: AWS::EC2::RouteTable
+    DependsOn: myVPC1
+    Properties:
+      VpcId: !Ref myVPC1
+      Tags:
+        - Key: Name
+          Value: DCF_TablaRutasPublica1
+
+  PublicRoute1:
+    Type: AWS::EC2::Route
+    DependsOn:
+      - PublicRouteTable1
+      - myIG1
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref myIG1
+      RouteTableId: !Ref PublicRouteTable1
+
+
+  PublicRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    DependsOn:
+      - PublicRouteTable1
+      - SubnetPublica1
+    Properties:
+      RouteTableId: !Ref PublicRouteTable1
+      SubnetId: !Ref SubnetPublica1
+
+
+  PublicRouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    DependsOn:
+      - PublicRouteTable1
+      - SubnetPublica2
+    Properties:
+      RouteTableId: !Ref PublicRouteTable1
+      SubnetId: !Ref SubnetPublica2
+
+######Tabla de enrutamiento a subredes privadas 
+  PrivateRouteTable1:
+    Type: AWS::EC2::RouteTable
+    DependsOn: myVPC1
+    Properties:
+      VpcId: !Ref myVPC1
+      Tags:
+        - Key: Name
+          Value: DCF_TablaRutasPrivada1
+
+  # Ruta privada
+  PrivateRoute1:
+    Type: AWS::EC2::Route
+    DependsOn: 
+      - PrivateRouteTable1
+      - NAT1
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      RouteTableId: !Ref PrivateRouteTable1
+      NatGatewayId: !Ref NAT1
+
+
+  PrivateRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    DependsOn:
+      - PrivateRouteTable1
+      - SubnetPrivada1
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      SubnetId: !Ref SubnetPrivada1
+
+###Tabla de enrutamiento para subred privada 2
+  PrivateRouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    DependsOn:
+      - PrivateRouteTable1
+      - SubnetPrivada2
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      SubnetId: !Ref SubnetPrivada2 
+
+###########
+# Public Subnet
+###########
+
+  SubnetPublica1:
+    Type: AWS::EC2::Subnet
+    DependsOn: myVPC1
+    Properties:
+      VpcId: !Ref myVPC1
+      MapPublicIpOnLaunch: true
+      CidrBlock: !Ref MiSubnetPublica1
+      AvailabilityZone: !Select 
+        - 0
+        - !GetAZs 
+          Ref: AWS::Region
+      Tags:
+        - Key: Name
+          Value: DCF_SubredPublicaApp1
+
+  SubnetPublica2:
+    Type: AWS::EC2::Subnet
+    DependsOn: myVPC1
+    Properties:
+      VpcId: !Ref myVPC1
+      MapPublicIpOnLaunch: true
+      CidrBlock: !Ref MiSubnetPublica2
+      AvailabilityZone: !Select 
+        - 1
+        - !GetAZs 
+          Ref: AWS::Region
+      Tags:
+        - Key: Name
+          Value: DCF_SubredPublicaApp2
+
+
+###########
+# Private Subnets
+###########
+
+  SubnetPrivada1:
+    Type: AWS::EC2::Subnet
+    DependsOn: myVPC1
+    Properties:
+      VpcId: !Ref myVPC1
+      CidrBlock: !Ref MiSubnetPrivada1
+      AvailabilityZone: !Select 
+        - 0
+        - !GetAZs 
+          Ref: AWS::Region
+      Tags:
+        - Key: Name
+          Value: DCF_SubredPrivadaBD1
+
+  SubnetPrivada2:
+    Type: AWS::EC2::Subnet
+    DependsOn: myVPC1
+    Properties:
+      VpcId: !Ref myVPC1
+      CidrBlock: !Ref MiSubnetPrivada2
+      AvailabilityZone: !Select 
+        - 1
+        - !GetAZs 
+          Ref: AWS::Region
+      Tags:
+        - Key: Name
+          Value: DCF_SubredPrivadaBD2
+
+####################
+# NAT Gateway
+##############
+
+  NAT1:
+    Type: AWS::EC2::NatGateway
+    Properties:
+        AllocationId: !GetAtt EIP1.AllocationId
+        SubnetId: !Ref SubnetPublica1
+        Tags:
+        - Key: Name
+          Value: NatGwDCF1
+
+  EIP1:
+    DependsOn: VPCtoIG1
+    Type: AWS::EC2::EIP
+    Properties:
+        Domain: vpc
+        Tags:
+        - Key: Name
+          Value: EIPDCF1
+
+  
+
+###########
+# App Security Groups
+###########
+
+  GrupoDeSeguridad1:
+    Type: AWS::EC2::SecurityGroup
+    DependsOn: myVPC1
+    Properties:
+      GroupName: SGDCF1
+      GroupDescription: Enable access to App
+      VpcId: !Ref myVPC1
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: 0.0.0.0/0
+      # SecurityGroupEgress:
+      #   - IpProtocol: tcp
+      #     FromPort: 80
+      #     ToPort: 80
+      #     CidrIp: 0.0.0.0/0
+      #   - IpProtocol: tcp
+      #     FromPort: 443
+      #     ToPort: 443
+      #     CidrIp: 0.0.0.0/0
+      #   - IpProtocol: tcp
+      #     FromPort: 22
+      #     ToPort: 22
+      #     CidrIp: 0.0.0.0/0
+      #   - IpProtocol: tcp
+      #     FromPort: 3306
+      #     ToPort: 3306
+      #     CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: DCF_SecurityGroup1
+
+  EKSCluster:
+    Type: "AWS::EKS::Cluster"
+    Properties:
+      Name: "MicroservicesCluster"
+      AccessConfig: 
+        AuthenticationMode: "API_AND_CONFIG_MAP"
+        BootstrapClusterCreatorAdminPermissions: true
+      ResourcesVpcConfig:
+        SubnetIds:
+          - !Ref SubnetPublica1
+          - !Ref SubnetPublica2
+        SecurityGroupIds:
+          - !Ref EKSSecurityGroup
+      RoleArn: !GetAtt EKSRole.Arn
+
+  MyAccessEntry:
+    Type: 'AWS::EKS::AccessEntry'
+    Properties:
+        ClusterName: "MicroservicesCluster"
+        PrincipalArn: 'arn:aws:iam::928975674404:user/Daniel'
+        Username: 'admin'
+        AccessPolicies:
+            - PolicyArn: 'arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy'
+              AccessScope:
+                Type: 'namespace'
+                Namespaces:
+                    - 'my-namespace'
+            - PolicyArn: 'arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy'
+              AccessScope:
+                Type: 'cluster'
+        Type: 'STANDARD'
+
+  MyRepository: 
+    Type: AWS::ECR::Repository
+    Properties: 
+      RepositoryName: "practice-repo"
+      RepositoryPolicyText: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Sid: AllowPushPull
+            Effect: Allow
+            Principal: 
+              AWS: 
+                - "arn:aws:iam::928975674404:user/Daniel"
+            Action: 
+              - "ecr:GetDownloadUrlForLayer"
+              - "ecr:BatchGetImage"
+              - "ecr:BatchCheckLayerAvailability"
+              - "ecr:PutImage"
+              - "ecr:InitiateLayerUpload"
+              - "ecr:UploadLayerPart"
+              - "ecr:CompleteLayerUpload"
+
+  EKSSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: "Allow all inbound traffic for EKS tasks"
+      VpcId: !Ref myVPC1
+      SecurityGroupIngress:
+        - IpProtocol: "-1"
+          CidrIp: "0.0.0.0/0"
+      SecurityGroupEgress:
+        - IpProtocol: "-1"
+          CidrIp: "0.0.0.0/0"
+
+  EKSRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "eks.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+      Path: "/"
+      RoleName: "EKSClusterRole"
+
+  CloudWatchLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    Properties:
+      LogGroupName: "/eks/microservices"
+      RetentionInDays: 7
+
+  AlarmTopic:
+    Type: "AWS::SNS::Topic"
+    Properties:
+      TopicName: "AlarmNotificationTopic"
+
+  ApplicationLoadBalancer:
+    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    Properties:
+      Name: "MicroservicesLoadBalancer"
+      Subnets:
+        - !Ref SubnetPublica1
+        - !Ref SubnetPublica2
+      SecurityGroups:
+        - !Ref EKSSecurityGroup
+      Scheme: "internet-facing"
+      Type: "application"
+      IpAddressType: "ipv4"
+
+  UsersTargetGroup:
+    Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+    Properties:
+      Name: "UsersTargetGroup"
+      Port: 8080
+      Protocol: "HTTP"
+      VpcId: !Ref myVPC1
+      TargetType: "ip"
+
+  OrdersTargetGroup:
+    Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+    Properties:
+      Name: "OrdersTargetGroup"
+      Port: 8081
+      Protocol: "HTTP"
+      VpcId: !Ref myVPC1
+      TargetType: "ip"
+
+  ALBListener:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      LoadBalancerArn: !Ref ApplicationLoadBalancer
+      Protocol: "HTTP"
+      Port: 80
+      DefaultActions:
+        - Type: "forward"
+          ForwardConfig:
+            TargetGroups:
+              - TargetGroupArn: !Ref UsersTargetGroup
+                Weight: 1
+              - TargetGroupArn: !Ref OrdersTargetGroup
+                Weight: 1
+
+  CPUUtilizationAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmName: "HighCPUUtilization"
+      AlarmDescription: "Alarma si la utilizaci?n de CPU supera el 80%"
+      MetricName: "CPUUtilization"
+      Namespace: "AWS/EKS"
+      Statistic: "Average"
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 80
+      ComparisonOperator: "GreaterThanThreshold"
+      Dimensions:
+        - Name: "ClusterName"
+          Value: !Ref EKSCluster
+      AlarmActions:
+        - !Ref AlarmTopic
+
+  UnhealthyTargetsAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmName: "UnhealthyTargets"
+      AlarmDescription: "Alarma si hay targets no saludables en el balanceador de carga"
+      MetricName: "UnHealthyHostCount"
+      Namespace: "AWS/ApplicationELB"
+      Statistic: "Sum"
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: "GreaterThanThreshold"
+      Dimensions:
+        - Name: "LoadBalancer"
+          Value: "app/my-load-balancer/1234567890abcdef"
+      AlarmActions:
+        - !Ref AlarmTopic
+
+Outputs:
+  VPCId:
+    Value: !Ref myVPC1
+    Description: "VPC ID"
+
+  
+  ClusterName:
+    Value: !Ref EKSCluster
+    Description: "EKS Cluster Name"
+
+  AlarmTopicArn:
+    Value: !Ref AlarmTopic
+    Description: "SNS Topic ARN for Alarm Notifications"
+
+  LoadBalancerDNSName:
+    Value: !GetAtt ApplicationLoadBalancer.DNSName
+    Description: "DNS Name of the Application Load Balancer"

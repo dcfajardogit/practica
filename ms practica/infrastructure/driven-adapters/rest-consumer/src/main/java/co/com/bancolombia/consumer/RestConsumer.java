@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 @Service
 public class RestConsumer implements OrdersmodelRepository
@@ -23,6 +24,7 @@ public class RestConsumer implements OrdersmodelRepository
     private final String url;
     private final OkHttpClient client;
     private final ObjectMapper mapper;
+    private static final Logger logger = Logger.getLogger(RestConsumer.class.getName());
 
     public RestConsumer(@Value("${adapter.restconsumer.url}") String url, OkHttpClient client, ObjectMapper mapper) {
         this.url = url;
@@ -48,8 +50,14 @@ public class RestConsumer implements OrdersmodelRepository
         return orders;
     }
 
-    public String testGetOk(Exception ignored) {
-        return "fallback";
+    public ArrayList<Ordersmodel> testGetOk(Exception ignored) {
+        ArrayList<Ordersmodel> orders = new ArrayList<Ordersmodel>();
+        logger.info(ignored.getMessage()); 
+        Ordersmodel exception = new Ordersmodel();
+        exception.setId(ignored.getMessage());
+        orders.add(exception);
+        
+        return orders;
     }
 
     @CircuitBreaker(name = "testPost") // this name should match with settings name in application.yaml

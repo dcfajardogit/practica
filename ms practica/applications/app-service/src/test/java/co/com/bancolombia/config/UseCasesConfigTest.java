@@ -7,6 +7,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import co.com.bancolombia.model.ordersmodel.gateways.OrdersmodelRepository;
+import org.mockito.Mockito;
+
+
 public class UseCasesConfigTest {
 
     @Test
@@ -33,6 +37,11 @@ public class UseCasesConfigTest {
         @Bean
         public MyUseCase myUseCase() {
             return new MyUseCase();
+        }
+
+        @Bean
+        public OrdersmodelRepository ordersmodelRepository() {    
+            return Mockito.mock(OrdersmodelRepository.class);
         }
     }
 

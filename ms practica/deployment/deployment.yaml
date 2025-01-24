@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: practica-deployment
+  labels:
+    app: practica
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: practica
+  template:
+    metadata:
+      labels:
+        app: practica
+    spec:
+      containers:
+        - name: prac-container
+          image: ms_practica_eks:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
