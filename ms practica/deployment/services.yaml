@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: practica-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: practica
   ports:

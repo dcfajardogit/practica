@@ -301,7 +301,7 @@ Resources:
   MyAccessEntry:
     Type: 'AWS::EKS::AccessEntry'
     Properties:
-        ClusterName: "MicroservicesCluster"
+        ClusterName: !Ref EKSCluster
         PrincipalArn: 'arn:aws:iam::928975674404:user/Daniel'
         Username: 'admin'
         AccessPolicies:
@@ -366,6 +366,44 @@ Resources:
       Path: "/"
       RoleName: "EKSClusterRole"
 
+  EKSWorkerRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "ec2.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
+        - "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+        - "arn:aws:iam::aws:policy/AmazonEKSWorkerNodeMinimalPolicy"
+        - "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+      Path: "/"
+      RoleName: "nodeRole"
+
+  EKSNodegroup:
+    Type: 'AWS::EKS::Nodegroup'
+    Properties:
+      AmiType: "AL2023_x86_64_STANDARD"
+      CapacityType: "ON_DEMAND"
+      ClusterName: !Ref EKSCluster
+      InstanceTypes: 
+        - t3.medium
+        - t3.medium
+      NodeRole: !GetAtt EKSWorkerRole.Arn
+      ScalingConfig:
+        MinSize: 2
+        DesiredSize: 2
+        MaxSize: 3
+      Subnets:
+        - !Ref SubnetPublica1
+        - !Ref SubnetPublica2
+
   CloudWatchLogGroup:
     Type: "AWS::Logs::LogGroup"
     Properties:
@@ -399,15 +437,6 @@ Resources:
       VpcId: !Ref myVPC1
       TargetType: "ip"
 
-  OrdersTargetGroup:
-    Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
-    Properties:
-      Name: "OrdersTargetGroup"
-      Port: 8081
-      Protocol: "HTTP"
-      VpcId: !Ref myVPC1
-      TargetType: "ip"
-
   ALBListener:
     Type: "AWS::ElasticLoadBalancingV2::Listener"
     Properties:
@@ -419,9 +448,6 @@ Resources:
           ForwardConfig:
             TargetGroups:
               - TargetGroupArn: !Ref UsersTargetGroup
-                Weight: 1
-              - TargetGroupArn: !Ref OrdersTargetGroup
-                Weight: 1
 
   CPUUtilizationAlarm:
     Type: "AWS::CloudWatch::Alarm"

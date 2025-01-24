@@ -27,9 +27,10 @@ cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
 adapter:
   restconsumer:
-    #url: "http://localhost:8081/api/orders" para pruebas sin contenerización
-    #url: "http://host.docker.internal:8081/api/orders" pruebas contenerizadas sin archivo service
-    url: "http://ms-api-service:8081/api/orders"
+    #url: "http://localhost:8081/api/orders" #para pruebas sin contenerización
+    #url: "http://host.docker.internal:8081/api/orders" #pruebas contenerizadas sin archivo service
+    #url: "http://ms-api-service:8081/api/orders" #para pruebas con kubernetes local y service tipo NodePort
+    url: "http://accf5be83dc924d488ccc98992160c36-757254021.us-east-1.elb.amazonaws.com/api/orders"
 resilience4j:
   circuitbreaker:
     instances:
