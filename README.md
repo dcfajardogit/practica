@@ -46,7 +46,8 @@ Este m�dulo es el m�s externo de la arquitectura, es el encargado de ensambl
 
 **Los beans de los casos de uso se disponibilizan automaticamente gracias a un '@ComponentScan' ubicado en esta capa.**
 
-#Creación del proyecto usando el plugin CleanArchitecure de bancolombia
+# Creación del proyecto usando el plugin CleanArchitecure de bancolombia
+
 La solución consiste en 2 Microservicios: Microservicio 1 --> consume --> Microservicio2 y este devuelve una lista
 la lista se ve de la siguiente forma:
 **{"id":"1","name":"Portatil","status":"Entregado"},{"id":"2","name":"escritorio","status":"Entregado"},{"id":"3","name":"silla","status":"Pendiente"}**
@@ -77,7 +78,7 @@ se creo el archivo build.gradle con la siguiente información:
 - Adicionalmente se crea un driven adapter para el ms practica gradle gda --type=restconsumer --name=consumer
 
 - Los archivos modificados en esta solución fueron los siguientes:
-##MS API
+## MS API
 - practica\ms api\applications\app-service\src\main\resources\application.yaml
 - practica\ms api\deployment\deployment.yaml
 - practica\ms api\deployment\services.yaml
@@ -87,7 +88,7 @@ se creo el archivo build.gradle con la siguiente información:
 - practica\ms api\domain\model\src\main\java\co\com\bancolombia\model\OrdersModel
 - practica\ms api\domain\usecase\src\main\java\co\com\bancolombia\usecase\orders\OrdersUseCase
 - practica\ms api\infrastructure\entry-points\api-rest\src\main\java\co\com\bancolombia\api\ApiRest
-##MS PRACTICA
+## MS PRACTICA
 - practica\ms practica\applications\app-service\src\main\resources\application.yaml
 - practica\ms practica\deployment\deployment.yaml
 - practica\ms practica\deployment\services.yaml
@@ -99,8 +100,8 @@ se creo el archivo build.gradle con la siguiente información:
 - practica\ms practica\infrastructure\entry-points\api-rest\src\main\java\co\com\bancolombia\api\ApiRest
 - practica\ms practica\infrastructure\driven-adapters\rest-consumer\src\main\java\co\com\bancolombia\consumer\ObjectResponse
 - practica\ms practica\infrastructure\driven-adapters\rest-consumer\src\main\java\co\com\bancolombia\consumer\RestConsumer
-##Pruebas Locales
-###1. Prerrequisitos y configuración
+## Pruebas Locales
+### 1. Prerrequisitos y configuración
 - gradle
 - docker desktop
 - awscli
@@ -109,8 +110,9 @@ se creo el archivo build.gradle con la siguiente información:
 - git
 - VSCode
 - Cuenta AWS
-##Hay 3 formas de probar localmente:
-###1. Levantando los microservicios de forma local
+  
+## Hay 3 formas de probar localmente:
+### 1. Levantando los microservicios de forma local
 - Verificamos el archivo application.yaml del ms practica y que la metadata adapter:restconsumer:url:, tenga el siguiente valor: **"http://localhost:8081/api/orders"**
 Nos ubicamos en la ruta de cada microservicio y ejecutamos el siguiente comando: practica\ms api>gradle bootrun **practica\ms practica>gradle bootrun
 image
@@ -271,38 +273,5 @@ image
 image
 
 
-## Pruebas Locales
 
-### Hay 3 formas de probar localmente:
-
-### 1.
-
-### 2. Por Medio de Docker
-
-En esta ocasión se utilizó Docker Desktop 
-
--	Se crea la red para docker 
-
-docker network create practica-network
-
--	Luego se levanta el contenedor indicándole la red interna de docker
-docker run -d -p 8080:8080 --name prac-container2 1633b9c732f7 --network practica-network
-
--	Se aplican los archivos de configuración deployment.yaml, services.yaml en ambos ms
-
-kubectl apply -f deployment.yaml
-kubectl apply -f services.yaml
-kubectl apply -f hpa.yaml
-
--	Luego se valida que los pods estén corriendo
-kubectl get pods
-
-probando con contenedores
- 
-
-Probando por el puerto del service
-Microservicio backend
- 
-Microservicio consumidor
- 
 
