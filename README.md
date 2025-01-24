@@ -46,64 +46,68 @@ Este m�dulo es el m�s externo de la arquitectura, es el encargado de ensambl
 
 **Los beans de los casos de uso se disponibilizan automaticamente gracias a un '@ComponentScan' ubicado en esta capa.**
 
-Creación del proyecto usando el plugin CleanArchitecure de bancolombia
+#Creación del proyecto usando el plugin CleanArchitecure de bancolombia
 La solución consiste en 2 Microservicios: Microservicio 1 --> consume --> Microservicio2 y este devuelve una lista
 la lista se ve de la siguiente forma:
-{"id":"1","name":"Portatil","status":"Entregado"},{"id":"2","name":"escritorio","status":"Entregado"},{"id":"3","name":"silla","status":"Pendiente"}
+**{"id":"1","name":"Portatil","status":"Entregado"},{"id":"2","name":"escritorio","status":"Entregado"},{"id":"3","name":"silla","status":"Pendiente"}**
 
 se creo el archivo build.gradle con la siguiente información:
-plugins { id 'co.com.bancolombia.cleanArchitecture' version '3.20.13' }
+**plugins { id 'co.com.bancolombia.cleanArchitecture' version '3.20.13' }**
 
-basados en ese archivo procedemos a crear la aplicación con el comando gradle ca --type=imperative --name=ms_api
+- basados en ese archivo procedemos a crear la aplicación con el comando 
 
-posterior a esto se crea el primer Microservicio 1 ms api con su respectivo entry point con el comando gradle gep --type=restmvc --name=ms_api
+**gradle ca --type=imperative --name=ms_api**
 
-también creamos el caso de uso gradle guc --name=user
+- posterior a esto se crea el primer Microservicio 1 ms api con su respectivo entry point con el comando 
 
-creamos el modelo gradle gm --name=OrdersModel
+**gradle gep --type=restmvc --name=ms_api**
 
-Repetimos los pasos para el microservicio 2 que será el ms practica
+ - también creamos el caso de uso gradle guc --name=user
 
-gradle ca --type=imperative --name=plataforma gradle gep --type=restmvc --name=user
+- creamos el modelo gradle gm --name=OrdersModel
 
-también creamos el caso de uso gradle guc --name=consumer
+- Repetimos los pasos para el microservicio 2 que será el ms practica
 
-creamos el modelo gradle gm --name=Ordersmodel
+- gradle ca --type=imperative --name=plataforma gradle gep --type=restmvc --name=user
 
-Adicionalmente se crea un driven adapter para el ms practica gradle gda --type=restconsumer --name=consumer
+- también creamos el caso de uso gradle guc --name=consumer
 
-Los archivos modificados en esta solución fueron los siguientes:
-MS API
-practica\ms api\applications\app-service\src\main\resources\application.yaml
-practica\ms api\deployment\deployment.yaml
-practica\ms api\deployment\services.yaml
-practica\ms api\deployment\hpa.yaml
-practica\ms api\deployment\Dockerfile
-practica\ms api\domain\model\src\main\java\co\com\bancolombia\model\ordersmodel\gateways\OrdersModelRepository
-practica\ms api\domain\model\src\main\java\co\com\bancolombia\model\OrdersModel
-practica\ms api\domain\usecase\src\main\java\co\com\bancolombia\usecase\orders\OrdersUseCase
-practica\ms api\infrastructure\entry-points\api-rest\src\main\java\co\com\bancolombia\api\ApiRest
-MS PRACTICA
-practica\ms practica\applications\app-service\src\main\resources\application.yaml
-practica\ms practica\deployment\deployment.yaml
-practica\ms practica\deployment\services.yaml
-practica\ms practica\deployment\hpa.yaml
-practica\ms practica\deployment\Dockerfile
-practica\ms practica\domain\model\src\main\java\co\com\bancolombia\model\ordersmodel\gateways\OrdersModelRepository
-practica\ms practica\domain\model\src\main\java\co\com\bancolombia\model\Ordersmodel
-practica\ms practica\domain\usecase\src\main\java\co\com\bancolombia\usecase\user\UserUseCase
-practica\ms practica\infrastructure\entry-points\api-rest\src\main\java\co\com\bancolombia\api\ApiRest
-practica\ms practica\infrastructure\driven-adapters\rest-consumer\src\main\java\co\com\bancolombia\consumer\ObjectResponse
-practica\ms practica\infrastructure\driven-adapters\rest-consumer\src\main\java\co\com\bancolombia\consumer\RestConsumer
-Pruebas Locales
-1. Prerrequisitos y configuración
-gradle
-docker desktop
-awscli
-kubectl
-openjdk-17
-git
-VSCode
+- creamos el modelo gradle gm --name=Ordersmodel
+
+- Adicionalmente se crea un driven adapter para el ms practica gradle gda --type=restconsumer --name=consumer
+
+- Los archivos modificados en esta solución fueron los siguientes:
+##MS API
+- practica\ms api\applications\app-service\src\main\resources\application.yaml
+- practica\ms api\deployment\deployment.yaml
+- practica\ms api\deployment\services.yaml
+- practica\ms api\deployment\hpa.yaml
+- practica\ms api\deployment\Dockerfile
+- practica\ms api\domain\model\src\main\java\co\com\bancolombia\model\ordersmodel\gateways\OrdersModelRepository
+- practica\ms api\domain\model\src\main\java\co\com\bancolombia\model\OrdersModel
+- practica\ms api\domain\usecase\src\main\java\co\com\bancolombia\usecase\orders\OrdersUseCase
+- practica\ms api\infrastructure\entry-points\api-rest\src\main\java\co\com\bancolombia\api\ApiRest
+##MS PRACTICA
+- practica\ms practica\applications\app-service\src\main\resources\application.yaml
+- practica\ms practica\deployment\deployment.yaml
+- practica\ms practica\deployment\services.yaml
+- practica\ms practica\deployment\hpa.yaml
+- practica\ms practica\deployment\Dockerfile
+- practica\ms practica\domain\model\src\main\java\co\com\bancolombia\model\ordersmodel\gateways\OrdersModelRepository
+- practica\ms practica\domain\model\src\main\java\co\com\bancolombia\model\Ordersmodel
+- practica\ms practica\domain\usecase\src\main\java\co\com\bancolombia\usecase\user\UserUseCase
+- practica\ms practica\infrastructure\entry-points\api-rest\src\main\java\co\com\bancolombia\api\ApiRest
+- practica\ms practica\infrastructure\driven-adapters\rest-consumer\src\main\java\co\com\bancolombia\consumer\ObjectResponse
+- practica\ms practica\infrastructure\driven-adapters\rest-consumer\src\main\java\co\com\bancolombia\consumer\RestConsumer
+##Pruebas Locales
+###1. Prerrequisitos y configuración
+- gradle
+- docker desktop
+- awscli
+- kubectl
+- openjdk-17
+- git
+- VSCode
 Cuenta AWS
 Hay 3 formas de probar localmente:
 1. Levantando los microservicios de forma local
