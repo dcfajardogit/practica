@@ -108,11 +108,11 @@ se creo el archivo build.gradle con la siguiente información:
 - openjdk-17
 - git
 - VSCode
-Cuenta AWS
-Hay 3 formas de probar localmente:
-1. Levantando los microservicios de forma local
-Verificamos el archivo application.yaml del ms practica y que la metadata adapter:restconsumer:url:, tenga el siguiente valor: "http://localhost:8081/api/orders"
-Nos ubicamos en la ruta de cada microservicio y ejecutamos el siguiente comando: practica\ms api>gradle bootrun practica\ms practica>gradle bootrun
+- Cuenta AWS
+##Hay 3 formas de probar localmente:
+###1. Levantando los microservicios de forma local
+- Verificamos el archivo application.yaml del ms practica y que la metadata adapter:restconsumer:url:, tenga el siguiente valor: **"http://localhost:8081/api/orders"**
+Nos ubicamos en la ruta de cada microservicio y ejecutamos el siguiente comando: practica\ms api>gradle bootrun **practica\ms practica>gradle bootrun
 image
 
 Luego abrimos el navegador con la siguiente URL:
