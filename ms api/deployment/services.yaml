@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: ms-api-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: ms-api
   ports:
     - protocol: TCP
-      port: 8081 # Puerto interno del servicio (lo que los clientes usan)
+      port: 80 # Puerto interno del servicio (lo que los clientes usan)
       targetPort: 8081 # Puerto donde el contenedor escucha
       nodePort: 32265 # Puerto expuesto en el nodo (entre 30000-32767)
