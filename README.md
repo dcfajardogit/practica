@@ -178,7 +178,6 @@ En esta ocasión se utilizó Docker Desktop
   se verifica que los contenedores estén arriba 
   ![image](https://github.com/user-attachments/assets/80e200a7-a896-484e-8040-cf1d6906e7b0)
 
-
 - Finalmente se procede a probar la comunicación entre los microservicios accediendo a la siguiente url:
 
   (http://host.docker.internal:8081/api/orders) Esta url debe ser la que se encuentra configurada en el     
@@ -215,10 +214,13 @@ En esta ocasión se utilizó Docker Desktop
   **Docker images**
 
 - Se debe verificar en el archivo deployment.yaml de cada uno de los microservicios, que en su metadata containers:image: 
-  tengan el valor correspondiente a su imagen y tag <nombre_imagen>:. Para el ms api sería: "ms_api:1.0". Posteriormente 
-  Se aplican los archivos de configuración deployment.yaml, services.yaml en ambos ms
+  tengan el valor correspondiente a su imagen y tag <nombre_imagen>:. Para el ms api sería: "ms_api:1.0". Adicionalmente se debe   
+  garantizar que el archivo services.yaml tenga en su metadata spec:type:NodePort.
+- Posteriormente se aplican los archivos de configuración deployment.yaml, services.yaml en ambos ms
 
-  **kubectl apply -f deployment.yaml kubectl apply -f services.yaml kubectl apply -f hpa.yaml**
+  **kubectl apply -f deployment.yaml
+  kubectl apply -f services.yaml
+  kubectl apply -f hpa.yaml**
 
 - Luego se valida que los pods estén corriendo
   **kubectl get pods**
