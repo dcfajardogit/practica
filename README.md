@@ -218,9 +218,9 @@ En esta ocasión se utilizó Docker Desktop
   garantizar que el archivo services.yaml tenga en su metadata spec:type:NodePort.
 - Posteriormente se aplican los archivos de configuración deployment.yaml, services.yaml en ambos ms
 
-  **kubectl apply -f deployment.yaml
-  kubectl apply -f services.yaml
-  kubectl apply -f hpa.yaml**
+  **kubectl apply -f deployment.yaml**
+  **kubectl apply -f services.yaml**
+  **kubectl apply -f hpa.yaml**
 
 - Luego se valida que los pods estén corriendo
   **kubectl get pods**
@@ -260,7 +260,8 @@ En esta ocasión se utilizó Docker Desktop
 
 - Una vez en el cluster, debemos ubicarnos en la ruta de cada ms para aplicar su respectivo archivo services.yaml
 
-  **ms practica\deployment>kubectl apply -f services.yaml ms api\deployment>kubectl apply -f services.yaml**
+  **ms practica\deployment>kubectl apply -f services.yaml**
+  **ms api\deployment>kubectl apply -f services.yaml**
 
 - verificamos con el comando
 
@@ -286,7 +287,8 @@ En esta ocasión se utilizó Docker Desktop
   service\buil\libs\plataforma.jar y reemplazado en su correspondiente carpeta deployment. en este caso sería: ms 
   practica\deployment\
 - Luego se procede a generar una nueva imagen de docker para el ms practica que fue el que sufrió cambios en su archivo 
-  application.yaml **practica\ms practica\deployment>docker build -t ms_practica_eks:2.0 -f Dockerfile .**
+  application.yaml
+  **practica\ms practica\deployment>docker build -t ms_practica_eks:2.0 -f Dockerfile .**
 
 - Luego de crear las imagenes, se verifica con el comando
 
@@ -299,10 +301,10 @@ En esta ocasión se utilizó Docker Desktop
      928975674404.dkr.ecr.us-east-1.amazonaws.com**
 
   2. luego se etiqueta la imagen local
-   **docker tag ms_api:1.0 928975674404.dkr.ecr.us-east-1.amazonaws.com/practice-repo:ms_api docker tag       
-     ms_practica_eks:2.0 928975674404.dkr.ecr.us-east-1.amazonaws.com/practice-repo:ms_practica_eks2**
+   **docker tag ms_api:1.0 928975674404.dkr.ecr.us-east-1.amazonaws.com/practice-repo:ms_api**
+   **docker tag ms_practica_eks:2.0 928975674404.dkr.ecr.us-east-1.amazonaws.com/practice-repo:ms_practica_eks2**
 
-  3. una vez se haya etiquetado la imagen se procede a para subir la imagen al ecr
+  4. una vez se haya etiquetado la imagen se procede a para subir la imagen al ecr
     **docker push 928975674404.dkr.ecr.us-east-1.amazonaws.com/practice-repo:ms_api docker push 928975674404.dkr.ecr.us-  
     east-1.amazonaws.com/practice-repo:ms_practica_eks2**
 
@@ -310,15 +312,15 @@ En esta ocasión se utilizó Docker Desktop
   metadata spec:containers:image: debe modificarse con los valores de la URI de ECR y la etiqueta de la imagen como se 
   encuentra en el ECR de la siguiente manera
 
-  **image: 928975674404.dkr.ecr.us-east-1.amazonaws.com/practice-repo:ms_practica_eks**
+  **image: 928975674404.dkr.ecr.us-east-1.amazonaws.com/practice-repo:ms_practica_eks2**
 
   y **image: 928975674404.dkr.ecr.us-east-1.amazonaws.com/practice-repo:ms_api**
 
 - Luego aplicamos los deployment.yaml a cada microservicio posicionados en la ruta donde se encuentra cada uno de los     
   archivos:
 
-  **practica\ms practica\deployment>kubectl apply -f deployment.yaml practica\ms api\deployment>kubectl apply -f 
-  deployment.yaml**
+  **practica\ms practica\deployment>kubectl apply -f deployment.yaml**
+  **practica\ms api\deployment>kubectl apply -f deployment.yaml**
 
 - Finalmente procedemos a realizar pruebas tanto en línea de comandos como desde el navegador:
 
