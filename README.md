@@ -145,7 +145,7 @@ En esta ocasión se utilizó Docker Desktop
 
   **"http://host.docker.internal:8081/api/orders"**
 
-- Posicionado sobre la ruta de cada microservicio, se ejecuta el comando: docker clean build se genera el .jar en la ruta 
+- Posicionado sobre la ruta de cada microservicio, se ejecuta el comando: gradle clean build se genera el .jar en la ruta 
   de cada microservicio. Ej para el ms api: ms api\applications\app-service\build\libs\ms-api.jar- dicho archivo .jar debe 
   ser copiado en su correspondiente carpeta deployment. Para el ejemplo sería: ms api\deployment\
 
@@ -201,7 +201,7 @@ En esta ocasión se utilizó Docker Desktop
 - una vez se hayan realizado estos cambios, se procede a crear un nuevo archivo .jar para el ms practica. Posicionados 
   sobre la ruta del microservicio, se ejecuta el comando:
 
-  **docker clean build**
+  **gradle clean build**
 
 - una vez generado el archivo .jar, debe ser copiado de la ruta **ms practica\applications\app- 
   service\buil\libs\plataforma.jar** y reemplazado en su correspondiente carpeta deployment. en este caso sería: ms 
@@ -278,7 +278,7 @@ En esta ocasión se utilizó Docker Desktop
 
 - Debemos generar un nuevo archivo .jar para el ms practica. Posicionados sobre la ruta del microservicio, se ejecuta el   
   comando:
-  **docker clean build**
+  **gradle clean build**
 
 - una vez generado el archivo .jar, debe ser copiado de la ruta ms practica\applications\app-  
   service\buil\libs\plataforma.jar y reemplazado en su correspondiente carpeta deployment. en este caso sería: ms 
