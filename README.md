@@ -302,11 +302,13 @@ En esta ocasión se utilizó Docker Desktop
 
   2. luego se etiqueta la imagen local
    **docker tag ms_api:1.0 928975674404.dkr.ecr.us-east-1.amazonaws.com/practice-repo:ms_api**
+     
    **docker tag ms_practica_eks:2.0 928975674404.dkr.ecr.us-east-1.amazonaws.com/practice-repo:ms_practica_eks2**
 
   4. una vez se haya etiquetado la imagen se procede a para subir la imagen al ecr
-    **docker push 928975674404.dkr.ecr.us-east-1.amazonaws.com/practice-repo:ms_api docker push 928975674404.dkr.ecr.us-  
-    east-1.amazonaws.com/practice-repo:ms_practica_eks2**
+    **docker push 928975674404.dkr.ecr.us-east-1.amazonaws.com/practice-repo:ms_api**
+     
+    **docker push 928975674404.dkr.ecr.us-east-1.amazonaws.com/practice-repo:ms_practica_eks2**
 
 - Posterior a subir las imagenes al ECR se procede a configurar los archivos deployment.yaml de cada ms ya que en la 
   metadata spec:containers:image: debe modificarse con los valores de la URI de ECR y la etiqueta de la imagen como se 
