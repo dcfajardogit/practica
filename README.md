@@ -90,7 +90,7 @@ Este m�dulo es el m�s externo de la arquitectura, es el encargado de ensambl
 - practica\ms api\domain\model\src\main\java\co\com\bancolombia\model\OrdersModel
 - practica\ms api\domain\usecase\src\main\java\co\com\bancolombia\usecase\orders\OrdersUseCase
 - practica\ms api\infrastructure\entry-points\api-rest\src\main\java\co\com\bancolombia\api\ApiRest
-- 
+  
 ### MS PRACTICA
 - practica\ms practica\applications\app-service\src\main\resources\application.yaml
 - practica\ms practica\deployment\deployment.yaml
@@ -117,17 +117,18 @@ Este m�dulo es el m�s externo de la arquitectura, es el encargado de ensambl
   
 ## Hay 3 formas de probar localmente:
 ### 1. Levantando los microservicios de forma local
-- Verificamos el archivo application.yaml del ms practica y que la metadata adapter:restconsumer:url:, tenga el siguiente valor: **"http://localhost:8081/api/orders"**
-- Nos ubicamos en la ruta de cada microservicio y ejecutamos el siguiente comando: practica\ms api>gradle bootrun **practica\ms practica>gradle bootrun**
-![image](https://github.com/user-attachments/assets/842dc625-05f1-41fb-a795-77f0e7d5a64f)
+- Verificamos el archivo application.yaml del ms practica y que la metadata adapter:restconsumer:url:, tenga el siguiente    valor: **"http://localhost:8081/api/orders"**
+- Nos ubicamos en la ruta de cada microservicio y ejecutamos el siguiente comando: practica\ms api>gradle bootrun   
+  **practica\ms practica>gradle bootrun**
+  ![image](https://github.com/user-attachments/assets/842dc625-05f1-41fb-a795-77f0e7d5a64f)
 
 - Luego abrimos el navegador con la siguiente URL:
 
-**http://localhost:8080/api/user** 
+  **http://localhost:8080/api/user** 
 
-y la salida se muestra a continuación
+  y la salida se muestra a continuación
 
-![image](https://github.com/user-attachments/assets/fadbaf8d-ee4f-4438-ba27-7fb3f2c3da3b)
+  ![image](https://github.com/user-attachments/assets/fadbaf8d-ee4f-4438-ba27-7fb3f2c3da3b)
 
 
 ### 2. Por Medio de Docker usando contenedores
@@ -136,11 +137,13 @@ En esta ocasión se utilizó Docker Desktop
 
 - Se debe crear la red para docker con el comando: **docker network create practica-network**
 
-- Se debe modificar el archivo application.yaml, que se encuentra en la ruta: ms practica\applications\app-   service\src\main\resources\ y se debe reemplazar en el valor adapter:restconsumer:url, el "localhost" por el host interno de docker **"host.docker.internal"**
+- Se debe modificar el archivo application.yaml, que se encuentra en la ruta: ms practica\applications\app-     
+  service\src\main\resources\ y se debe reemplazar en el valor adapter:restconsumer:url, el "localhost" por el host 
+  interno de docker **"host.docker.internal"**
 
-La url quedaría de la siguiente manera:
+  La url quedaría de la siguiente manera:
 
-**"http://host.docker.internal:8081/api/orders"**
+  **"http://host.docker.internal:8081/api/orders"**
 
 - Posicionado sobre la ruta de cada microservicio, se ejecuta el comando: docker clean build se genera el .jar en la ruta 
   de cada microservicio. Ej para el ms api: ms api\applications\app-service\build\libs\ms-api.jar- dicho archivo .jar debe 
@@ -155,37 +158,45 @@ La url quedaría de la siguiente manera:
 
 - Luego de crear las imagenes, se verifica con el comando
 
-**Docker images**
+  **Docker images**
 
-para validar que se hayan creado exitosamente y se toma el valor de IMAGE ID
+  para validar que se hayan creado exitosamente y se toma el valor de IMAGE ID
 
-- con el valor IMAGE ID de cada una de las imagenes se procede a subir cada uno de los microservicios teniendo en cuenta los puertos configurados en el archivo application.yaml, definiendo el nombre para el contenedor y agregando el nombre de la red de docker creada en el punto 1 con el comando:
+- con el valor IMAGE ID de cada una de las imagenes se procede a subir cada uno de los microservicios teniendo en cuenta   
+  los puertos configurados en el archivo application.yaml, definiendo el nombre para el contenedor y agregando el nombre 
+  de la red de docker creada en el punto 1 con el comando:
 - ![image](https://github.com/user-attachments/assets/bed571d7-3c2f-44e2-9f1d-cea9797123d2)
 
 
-**practica\ms api>docker run -d -p 8081:8081 --name api-container2 500243ae681b --network practica-network practica\ms practica>docker run -d -p 8080:8080 --name prac-container2 669616ed567d --network practica-network**
+  **practica\ms api>docker run -d -p 8081:8081 --name api-container2 500243ae681b --network practica-network practica\ms   
+  practica>docker run -d -p 8080:8080 --name prac-container2 669616ed567d --network practica-network**
 
 - luego con el comando:
 
-**docker ps**
+  **docker ps**
 
-se verifica que los contenedores estén arriba 
-![image](https://github.com/user-attachments/assets/80e200a7-a896-484e-8040-cf1d6906e7b0)
+  se verifica que los contenedores estén arriba 
+  ![image](https://github.com/user-attachments/assets/80e200a7-a896-484e-8040-cf1d6906e7b0)
 
 
 - Finalmente se procede a probar la comunicación entre los microservicios accediendo a la siguiente url:
 
-(http://host.docker.internal:8081/api/orders) Esta url debe ser la que se encuentra configurada en el adapter:restconsumer:url del archivo application.yaml que se encuentra en la ruta: **ms practica\applications\app-service\src\main\resources\**
+  (http://host.docker.internal:8081/api/orders) Esta url debe ser la que se encuentra configurada en el     
+  adapter:restconsumer:url del archivo application.yaml que se encuentra en la ruta: **ms practica\applications\app- 
+  service\src\main\resources\**
 
-probando con docker 
-![image](https://github.com/user-attachments/assets/62d91da0-16d7-446f-ba18-c68d4f5d14e4)
+  probando con docker 
+  ![image](https://github.com/user-attachments/assets/62d91da0-16d7-446f-ba18-c68d4f5d14e4)
 
 
 ### 3. Por Medio de contenedores y kubernetes
-- Se debe modificar el archivo application.yaml, que se encuentra en la ruta: ms practica\applications\app-service\src\main\resources\ y se debe reemplazar en el valor adapter:restconsumer:url, el "localhost" por el nombre del servicio del ms-api configurado en su campo metadata:name: en el archivo services.yaml, que se encuentra en la ruta: ms api\deployment\ al igual que los archivos deployment.yaml y hpa.yaml.
-La url quedaría de la siguiente manera:
+- Se debe modificar el archivo application.yaml, que se encuentra en la ruta: ms practica\applications\app-  
+  service\src\main\resources\ y se debe reemplazar en el valor adapter:restconsumer:url, el "localhost" por el nombre del 
+  servicio del ms-api configurado en su campo metadata:name: en el archivo services.yaml, que se encuentra en la ruta: ms 
+  api\deployment\ al igual que los archivos deployment.yaml y hpa.yaml.
+  La url quedaría de la siguiente manera:
 
-**"http://ms-api-service:8081/api/orders"**
+  **"http://ms-api-service:8081/api/orders"**
 
 - una vez se hayan realizado estos cambios, se procede a crear un nuevo archivo .jar para el ms practica. Posicionados 
   sobre la ruta del microservicio, se ejecuta el comando:
