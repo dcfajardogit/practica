@@ -48,22 +48,23 @@ Este m�dulo es el m�s externo de la arquitectura, es el encargado de ensambl
 
 # Creación del proyecto usando el plugin CleanArchitecure de bancolombia
 
-La solución consiste en 2 Microservicios: Microservicio 1 --> consume --> Microservicio2 y este devuelve una lista
-la lista se ve de la siguiente forma:
-**{"id":"1","name":"Portatil","status":"Entregado"},{"id":"2","name":"escritorio","status":"Entregado"},{"id":"3","name":"silla","status":"Pendiente"}**
+- La solución consiste en 2 Microservicios: Microservicio 1 --> consume --> Microservicio2 y este devuelve una lista
+  la lista se ve de la siguiente forma:
+  **{"id":"1","name":"Portatil","status":"Entregado"},{"id":"2","name":"escritorio","status":"Entregado"}, 
+  {"id":"3","name":"silla","status":"Pendiente"}**
 
-se creo el archivo build.gradle con la siguiente información:
-**plugins { id 'co.com.bancolombia.cleanArchitecture' version '3.20.13' }**
+- se creo el archivo build.gradle con la siguiente información:
+  **plugins { id 'co.com.bancolombia.cleanArchitecture' version '3.20.13' }**
 
 - basados en ese archivo procedemos a crear la aplicación con el comando 
 
-**gradle ca --type=imperative --name=ms_api**
+  **gradle ca --type=imperative --name=ms_api**
 
 - posterior a esto se crea el primer Microservicio 1 ms api con su respectivo entry point con el comando 
 
-**gradle gep --type=restmvc --name=ms_api**
+  **gradle gep --type=restmvc --name=ms_api**
 
- - también creamos el caso de uso gradle guc --name=user
+- también creamos el caso de uso gradle guc --name=user
 
 - creamos el modelo gradle gm --name=OrdersModel
 
@@ -78,7 +79,8 @@ se creo el archivo build.gradle con la siguiente información:
 - Adicionalmente se crea un driven adapter para el ms practica gradle gda --type=restconsumer --name=consumer
 
 - Los archivos modificados en esta solución fueron los siguientes:
-## MS API
+  
+### MS API
 - practica\ms api\applications\app-service\src\main\resources\application.yaml
 - practica\ms api\deployment\deployment.yaml
 - practica\ms api\deployment\services.yaml
@@ -88,7 +90,8 @@ se creo el archivo build.gradle con la siguiente información:
 - practica\ms api\domain\model\src\main\java\co\com\bancolombia\model\OrdersModel
 - practica\ms api\domain\usecase\src\main\java\co\com\bancolombia\usecase\orders\OrdersUseCase
 - practica\ms api\infrastructure\entry-points\api-rest\src\main\java\co\com\bancolombia\api\ApiRest
-## MS PRACTICA
+- 
+### MS PRACTICA
 - practica\ms practica\applications\app-service\src\main\resources\application.yaml
 - practica\ms practica\deployment\deployment.yaml
 - practica\ms practica\deployment\services.yaml
@@ -100,6 +103,7 @@ se creo el archivo build.gradle con la siguiente información:
 - practica\ms practica\infrastructure\entry-points\api-rest\src\main\java\co\com\bancolombia\api\ApiRest
 - practica\ms practica\infrastructure\driven-adapters\rest-consumer\src\main\java\co\com\bancolombia\consumer\ObjectResponse
 - practica\ms practica\infrastructure\driven-adapters\rest-consumer\src\main\java\co\com\bancolombia\consumer\RestConsumer
+
 ## Pruebas Locales
 ### 1. Prerrequisitos y configuración
 - gradle
@@ -114,19 +118,21 @@ se creo el archivo build.gradle con la siguiente información:
 ## Hay 3 formas de probar localmente:
 ### 1. Levantando los microservicios de forma local
 - Verificamos el archivo application.yaml del ms practica y que la metadata adapter:restconsumer:url:, tenga el siguiente valor: **"http://localhost:8081/api/orders"**
-Nos ubicamos en la ruta de cada microservicio y ejecutamos el siguiente comando: practica\ms api>gradle bootrun **practica\ms practica>gradle bootrun
-image
+- Nos ubicamos en la ruta de cada microservicio y ejecutamos el siguiente comando: practica\ms api>gradle bootrun **practica\ms practica>gradle bootrun**
+![image](https://github.com/user-attachments/assets/842dc625-05f1-41fb-a795-77f0e7d5a64f)
 
-Luego abrimos el navegador con la siguiente URL:
+- Luego abrimos el navegador con la siguiente URL:
 
-http://localhost:8080/api/user
+**http://localhost:8080/api/user** 
 
 y la salida se muestra a continuación
 
-image
+![image](https://github.com/user-attachments/assets/fadbaf8d-ee4f-4438-ba27-7fb3f2c3da3b)
 
-2. Por Medio de Docker usando contenedores
-En esta ocasión se utilizó Docker Desktop
+
+### 2. Por Medio de Docker usando contenedores
+
+-En esta ocasión se utilizó Docker Desktop
 
 Se debe crear la red para docker con el comando: docker network create practica-network
 
